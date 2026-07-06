@@ -6,160 +6,155 @@ import Icon from './Icon.astro';
 <section id="projects" aria-labelledby="projects-title">
   <div class="container">
     <h2 id="projects-title" class="section-title" data-reveal>Projects</h2>
-    <div class="projects-grid">
-      {
-        projects.map((project, i) => (
-          <article class:list={['card', { featured: project.featured }]} data-reveal data-delay={String(Math.min(i, 3))} style={`--card-hue: ${project.hue ?? 245}`}>
-            <div class="banner" aria-hidden="true">
-              <span class="banner-icon">
-                <Icon name={project.icon ?? 'code'} size={26} />
-              </span>
-              <div class="card-links">
-                {project.source && (
-                  <a href={project.source} aria-label={`${project.title} source code`} target="_blank" rel="noopener noreferrer">
-                    <Icon name="github" size={18} />
-                  </a>
-                )}
-                {project.demo && (
-                  <a href={project.demo} aria-label={`${project.title} live demo`} target="_blank" rel="noopener noreferrer">
-                    <Icon name="external" size={18} />
-                  </a>
-                )}
-              </div>
-            </div>
+  </div>
 
-            <div class="card-body">
-            <h3 class="card-title">
+  <div class="container stack">
+    {
+      projects.map((project, i) => (
+        <article class="panel" style={`--card-hue: ${project.hue ?? 24}; --i: ${i}`}>
+          <div class="panel-info">
+            {project.featured && <p class="panel-kicker">Flagship product</p>}
+            <h3 class="panel-title">
               {project.demo ? (
                 <a href={project.demo} target="_blank" rel="noopener noreferrer">{project.title}</a>
               ) : (
                 project.title
               )}
             </h3>
-            <p class="card-desc">{project.description}</p>
-
+            <p class="panel-desc">{project.description}</p>
             <ul class="tags">
               {project.tags.map((tag) => (
                 <li>{tag}</li>
               ))}
             </ul>
+            <div class="panel-links">
+              {project.demo && (
+                <a href={project.demo} class="btn btn-ghost" target="_blank" rel="noopener noreferrer">
+                  View live
+                  <Icon name="external" size={16} />
+                </a>
+              )}
+              {project.source && (
+                <a href={project.source} class="btn btn-ghost" target="_blank" rel="noopener noreferrer">
+                  <Icon name="github" size={16} />
+                  Source
+                </a>
+              )}
             </div>
-          </article>
-        ))
-      }
-    </div>
+          </div>
+
+          <div class="panel-visual" aria-hidden="true">
+            <span class="panel-icon">
+              <Icon name={project.icon ?? 'code'} size={56} />
+            </span>
+          </div>
+        </article>
+      ))
+    }
   </div>
 </section>
 
 <style>
-  .projects-grid {
+  /* Panels pin under the header and stack over each other while scrolling */
+  .stack {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 1.25rem;
+    gap: 1.5rem;
   }
-  .card {
-    display: flex;
-    flex-direction: column;
-    background: var(--bg-elevated);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    overflow: hidden;
-    transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
-  }
-  .card:hover {
-    transform: translateY(-4px);
-    border-color: color-mix(in srgb, var(--accent) 50%, var(--border));
-    box-shadow: var(--shadow), var(--glow);
-  }
-  .card.featured {
-    border-color: color-mix(in srgb, var(--accent) 45%, var(--border));
-  }
-  /* Gradient banner — hue comes from the project data */
-  .banner {
-    position: relative;
-    display: flex;
+  .panel {
+    position: sticky;
+    top: calc(5.5rem + var(--i) * 1.4rem);
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    gap: clamp(1.5rem, 4vw, 3rem);
     align-items: center;
-    justify-content: space-between;
-    padding: 1.9rem 1.5rem;
+    min-height: clamp(24rem, 60vh, 33rem);
+    padding: clamp(1.75rem, 4.5vw, 3.5rem);
+    border-radius: 20px;
+    border: 1px solid hsl(var(--card-hue) 45% 40% / 0.35);
+    /* Opaque so it fully covers the previous panel while stacking */
     background:
       radial-gradient(
-        14rem 8rem at 85% -30%,
-        hsl(calc(var(--card-hue) + 40) 80% 65% / 0.28),
-        transparent 70%
+        30rem 18rem at 85% 0%,
+        hsl(var(--card-hue) 55% 30% / 0.25),
+        transparent 65%
       ),
-      linear-gradient(
-        135deg,
-        hsl(var(--card-hue) 75% 60% / 0.22),
-        hsl(var(--card-hue) 70% 50% / 0.08)
-      );
-    border-bottom: 1px solid var(--border);
+      color-mix(in srgb, hsl(var(--card-hue) 40% 14%) 45%, var(--bg-elevated));
+    box-shadow: 0 -12px 40px rgba(0, 0, 0, 0.4);
+    overflow: hidden;
   }
-  .banner-icon {
-    display: grid;
-    place-items: center;
-    width: 3rem;
-    height: 3rem;
-    border-radius: 12px;
-    color: hsl(var(--card-hue) 75% var(--hue-icon-l));
-    background: hsl(var(--card-hue) 70% 55% / 0.18);
-    border: 1px solid hsl(var(--card-hue) 70% 60% / 0.35);
-    backdrop-filter: blur(4px);
-    transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+  .panel-kicker {
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: hsl(var(--card-hue) 80% var(--hue-icon-l));
+    margin: 0 0 0.9rem;
   }
-  .card:hover .banner-icon {
-    transform: scale(1.12) rotate(-4deg);
+  .panel-title {
+    font-size: clamp(1.8rem, 4.5vw, 3rem);
+    font-weight: 800;
+    margin: 0 0 1rem;
+    letter-spacing: -0.02em;
   }
-  .card-body {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-    padding: 1.35rem 1.5rem 1.5rem;
-  }
-  .card-links {
-    display: flex;
-    gap: 0.5rem;
-  }
-  .card-links a {
-    display: grid;
-    place-items: center;
-    width: 2.1rem;
-    height: 2.1rem;
-    border-radius: 9px;
-    color: var(--text);
-    background: color-mix(in srgb, var(--bg) 55%, transparent);
-    border: 1px solid var(--border);
-    backdrop-filter: blur(4px);
-    transition: color 0.15s ease, border-color 0.15s ease;
-  }
-  .card-links a:hover {
-    color: var(--accent);
-    border-color: var(--accent);
-  }
-  .card-title {
-    font-size: 1.2rem;
-    margin-bottom: 0.6rem;
-  }
-  .card-title a {
+  .panel-title a {
     color: var(--text);
   }
-  .card-title a:hover {
-    color: var(--accent);
+  .panel-title a:hover {
+    color: hsl(var(--card-hue) 80% var(--hue-icon-l));
   }
-  .card-desc {
+  .panel-desc {
     color: var(--text-muted);
-    font-size: 0.98rem;
-    margin: 0 0 1.25rem;
-    flex: 1;
+    font-size: 1.02rem;
+    max-width: 52ch;
+    margin: 0 0 1.4rem;
   }
   .tags {
     list-style: none;
     display: flex;
     flex-wrap: wrap;
-    gap: 0.4rem 0.9rem;
-    margin: 0;
+    gap: 0.4rem 1rem;
+    margin: 0 0 1.6rem;
     padding: 0;
     font-family: var(--font-mono);
-    font-size: 0.78rem;
+    font-size: 0.8rem;
     color: var(--text-muted);
+  }
+  .panel-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.7rem;
+  }
+
+  .panel-visual {
+    display: grid;
+    place-items: center;
+    position: relative;
+    min-height: 12rem;
+  }
+  .panel-icon {
+    display: grid;
+    place-items: center;
+    width: clamp(7rem, 14vw, 10rem);
+    height: clamp(7rem, 14vw, 10rem);
+    border-radius: 28px;
+    color: hsl(var(--card-hue) 80% var(--hue-icon-l));
+    background: hsl(var(--card-hue) 65% 50% / 0.14);
+    border: 1px solid hsl(var(--card-hue) 60% 55% / 0.35);
+    box-shadow: 0 0 60px hsl(var(--card-hue) 70% 50% / 0.25);
+    transform: rotate(-4deg);
+    transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .panel:hover .panel-icon {
+    transform: rotate(0deg) scale(1.05);
+  }
+
+  @media (max-width: 820px) {
+    .panel {
+      grid-template-columns: 1fr;
+      min-height: 0;
+    }
+    .panel-visual {
+      display: none;
+    }
   }
 </style>

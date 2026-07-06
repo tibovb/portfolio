@@ -7,108 +7,110 @@ import { Icon as Logo } from 'astro-icon/components';
 <section id="skills" aria-labelledby="skills-title">
   <div class="container">
     <h2 id="skills-title" class="section-title" data-reveal>Skills</h2>
-    <div class="skills-grid">
+    <ul class="skill-index">
       {
         skills.map((group, i) => (
-          <div class="skill-card" data-reveal data-delay={String(Math.min(i, 3))} style={`--card-hue: ${group.hue}`}>
-            <span class="skill-watermark" aria-hidden="true">
-              <Icon name={group.icon} size={120} />
-            </span>
-            <div class="skill-head">
-              <span class="skill-icon" aria-hidden="true">
-                <Icon name={group.icon} size={19} />
+          <li class="skill-row" data-reveal data-delay={String(Math.min(i, 2))} style={`--card-hue: ${group.hue}`}>
+            <div class="row-head">
+              <span class="row-icon" aria-hidden="true">
+                <Icon name={group.icon} size={18} />
               </span>
               <h3>{group.title}</h3>
             </div>
-            <ul class="chips">
+            <div class="row-items">
               {group.items.map((item) => (
-                <li>
-                  <span class="chip">
-                    {item.logo && <Logo name={item.logo} class="chip-logo" aria-hidden="true" />}
-                    {item.label}
-                  </span>
-                </li>
+                <span class="row-item">
+                  {item.logo && <Logo name={item.logo} class="row-logo" aria-hidden="true" />}
+                  {item.label}
+                </span>
               ))}
-            </ul>
-          </div>
+            </div>
+          </li>
         ))
       }
-    </div>
+    </ul>
   </div>
 </section>
 
 <style>
-  .skills-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 1.25rem;
-  }
-  .skill-card {
-    position: relative;
-    overflow: hidden;
-    padding: 1.5rem;
-    background:
-      linear-gradient(180deg, hsl(var(--card-hue) 70% 55% / 0.08), transparent 45%),
-      var(--bg-elevated);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    transition: border-color 0.2s ease, transform 0.2s ease;
-  }
-  .skill-card:hover {
-    border-color: hsl(var(--card-hue) 65% 60% / 0.55);
-    transform: translateY(-3px);
-  }
-  .skill-watermark {
-    position: absolute;
-    right: -1.6rem;
-    bottom: -1.8rem;
-    color: hsl(var(--card-hue) 70% 60%);
-    opacity: 0.07;
-    transform: rotate(-12deg);
-    pointer-events: none;
-    transition: opacity 0.25s ease, transform 0.25s ease;
-  }
-  .skill-card:hover .skill-watermark {
-    opacity: 0.13;
-    transform: rotate(-6deg) scale(1.04);
-  }
-  .skill-head {
-    display: flex;
-    align-items: center;
-    gap: 0.7rem;
-    margin-bottom: 1rem;
-  }
-  .skill-icon {
-    display: grid;
-    place-items: center;
-    width: 2.4rem;
-    height: 2.4rem;
-    border-radius: 10px;
-    color: hsl(var(--card-hue) 75% var(--hue-icon-l));
-    background: hsl(var(--card-hue) 70% 55% / 0.14);
-    border: 1px solid hsl(var(--card-hue) 65% 60% / 0.35);
-    flex-shrink: 0;
-  }
-  .skill-card h3 {
-    font-size: 1.05rem;
-    margin: 0;
-  }
-  .chips {
+  .skill-index {
     list-style: none;
     margin: 0;
     padding: 0;
+  }
+  .skill-row {
+    display: grid;
+    grid-template-columns: minmax(15rem, 1fr) 1.8fr;
+    gap: 1rem 2.5rem;
+    align-items: start;
+    padding-block: 1.7rem;
+    border-top: 1px solid var(--border);
+    transition: background 0.25s ease;
+  }
+  .skill-index .skill-row:last-child {
+    border-bottom: 1px solid var(--border);
+  }
+  .skill-row:hover {
+    background: linear-gradient(
+      90deg,
+      hsl(var(--card-hue) 50% 40% / 0.07),
+      transparent 70%
+    );
+  }
+  .row-head {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .skill-row:hover .row-head {
+    transform: translateX(0.5rem);
+  }
+  .row-icon {
+    display: grid;
+    place-items: center;
+    width: 2.2rem;
+    height: 2.2rem;
+    border-radius: 9px;
+    flex-shrink: 0;
+    color: hsl(var(--card-hue) 75% var(--hue-icon-l));
+    background: hsl(var(--card-hue) 70% 55% / 0.13);
+    border: 1px solid hsl(var(--card-hue) 65% 60% / 0.3);
+  }
+  .row-head h3 {
+    font-size: clamp(1.15rem, 2.4vw, 1.5rem);
+    font-weight: 700;
+    margin: 0;
+  }
+  .skill-row:hover .row-head h3 {
+    color: hsl(var(--card-hue) 80% var(--hue-icon-l));
+  }
+  .row-items {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.5rem;
+    gap: 0.55rem 1.4rem;
+    align-content: center;
+    padding-top: 0.35rem;
   }
-  .chips .chip {
+  .row-item {
     display: inline-flex;
     align-items: center;
-    gap: 0.4rem;
+    gap: 0.45rem;
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    white-space: nowrap;
   }
-  .chips :global(.chip-logo) {
-    width: 0.95rem;
-    height: 0.95rem;
+  .row-items :global(.row-logo) {
+    width: 1rem;
+    height: 1rem;
     flex-shrink: 0;
+  }
+
+  @media (max-width: 720px) {
+    .skill-row {
+      grid-template-columns: 1fr;
+      gap: 0.9rem;
+    }
   }
 </style>

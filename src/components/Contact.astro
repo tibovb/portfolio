@@ -4,40 +4,59 @@ import Icon from './Icon.astro';
 ---
 
 <section id="contact" aria-labelledby="contact-title">
-  <div class="container contact-inner">
-    <p class="contact-index" data-reveal>What’s next?</p>
-    <h2 id="contact-title" class="section-title contact-title" data-reveal>Get in touch</h2>
-    <p class="contact-lead" data-reveal data-delay="1">
-      I’m open to freelance projects, collaborations, and interesting conversations
-      about integration architecture, mobile development, or software for your sport.
-      Feel free to reach out.
-    </p>
-    <div class="contact-actions" data-reveal data-delay="2">
-      <a href={`mailto:${site.email}`} class="btn btn-primary">
-        <Icon name="mail" size={18} />
-        Say hello
-      </a>
-      <button class="email-pill" type="button" id="copy-email" data-email={site.email} title="Copy email address">
-        <span class="email-text">{site.email}</span>
-        <span class="pill-icon icon-copy"><Icon name="copy" size={16} /></span>
-        <span class="pill-icon icon-check"><Icon name="check" size={16} /></span>
-        <span class="sr-only">Copy email address to clipboard</span>
-      </button>
+  <div class="container contact-grid">
+    <div class="contact-copy">
+      <p class="contact-index" data-reveal>What’s next?</p>
+      <h2 id="contact-title" class="contact-title" data-reveal>Get in touch</h2>
+      <p class="contact-lead" data-reveal data-delay="1">
+        I’m open to freelance projects, collaborations, and interesting conversations
+        about integration architecture, mobile development, or software for your sport.
+        Feel free to reach out.
+      </p>
+
+      <div class="contact-actions" data-reveal data-delay="2">
+        <a href={`mailto:${site.email}`} class="btn btn-primary">
+          <Icon name="mail" size={18} />
+          Say hello
+        </a>
+        <button class="email-pill" type="button" id="copy-email" data-email={site.email} title="Copy email address">
+          <span class="email-text">{site.email}</span>
+          <span class="pill-icon icon-copy"><Icon name="copy" size={16} /></span>
+          <span class="pill-icon icon-check"><Icon name="check" size={16} /></span>
+          <span class="sr-only">Copy email address to clipboard</span>
+        </button>
+      </div>
+
+      <div class="socials" data-reveal data-delay="2">
+        {
+          site.socials.map((s) => (
+            <a href={s.href} class="social" aria-label={s.label} target={s.href.startsWith('http') ? '_blank' : undefined} rel={s.href.startsWith('http') ? 'noopener noreferrer' : undefined}>
+              <Icon name={s.icon} />
+            </a>
+          ))
+        }
+      </div>
     </div>
 
-    <div class="socials" data-reveal data-delay="2">
-      {
-        site.socials.map((s) => (
-          <a href={s.href} class="social" aria-label={s.label} target={s.href.startsWith('http') ? '_blank' : undefined} rel={s.href.startsWith('http') ? 'noopener noreferrer' : undefined}>
-            <Icon name={s.icon} />
-          </a>
-        ))
-      }
+    <div class="chat" data-reveal data-delay="2">
+      <div class="chat-bar">
+        <span class="chat-dot" aria-hidden="true"></span>
+        <span class="chat-title">Ask me anything</span>
+      </div>
+      <div class="chat-body" id="chat-body" role="log" aria-live="off"></div>
+      <div class="chat-suggest" id="chat-suggest"></div>
+      <div class="chat-input">
+        <span class="chat-prompt" id="chat-prompt"></span>
+        <button class="chat-send" id="chat-send" type="button" aria-label="Send question">
+          <Icon name="arrow" size={16} />
+        </button>
+      </div>
     </div>
   </div>
 </section>
 
 <script is:inline>
+  // Copy email to clipboard.
   (() => {
     const btn = document.getElementById('copy-email');
     if (!btn) return;
@@ -47,7 +66,6 @@ import Icon from './Icon.astro';
       try {
         await navigator.clipboard.writeText(email);
       } catch {
-        // Clipboard API unavailable (non-secure context) — fall back.
         const ta = document.createElement('textarea');
         ta.value = email;
         document.body.appendChild(ta);
@@ -60,13 +78,138 @@ import Icon from './Icon.astro';
       timer = setTimeout(() => btn.classList.remove('copied'), 2000);
     });
   })();
+
+  // Scripted chat.
+  (() => {
+    const body = document.getElementById('chat-body');
+    const promptEl = document.getElementById('chat-prompt');
+    const sendBtn = document.getElementById('chat-send');
+    const suggestEl = document.getElementById('chat-suggest');
+    if (!body || !promptEl || !sendBtn || !suggestEl) return;
+
+    const QA = [
+      {
+        q: 'Who is Tibo?',
+        a: 'Tibo is a Microsoft Integration Consultant at delaware Benelux. After hours he runs his own software business and builds DRIVN Health, a platform for powerlifters.',
+      },
+      {
+        q: 'What does he work with?',
+        a: 'Azure Integration Services on the enterprise side, React Native and TypeScript on the product side. AI tools like Claude Code are part of his daily workflow.',
+      },
+      {
+        q: 'Is he available for freelance?',
+        a: 'Yes, he is. Use the button on the left or mail tibo.vanbrabandt@gmail.com and he will get back to you.',
+      },
+    ];
+
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+    let run = 0; // bump to cancel whatever is playing
+    let started = false;
+
+    const bubble = (cls) => {
+      const el = document.createElement('div');
+      el.className = 'bubble ' + cls;
+      body.appendChild(el);
+      body.scrollTop = body.scrollHeight;
+      return el;
+    };
+
+    async function play(idx, token) {
+      const { q, a } = QA[idx];
+      promptEl.textContent = '';
+      for (const ch of q) {
+        if (token !== run) return;
+        promptEl.textContent += ch;
+        await sleep(34);
+      }
+      await sleep(400);
+      if (token !== run) return;
+      sendBtn.classList.add('pulse');
+      await sleep(220);
+      sendBtn.classList.remove('pulse');
+      promptEl.textContent = '';
+      bubble('user').textContent = q;
+      const typing = bubble('assistant typing');
+      typing.innerHTML = '<span></span><span></span><span></span>';
+      await sleep(1000);
+      if (token !== run) return void typing.remove();
+      typing.classList.remove('typing');
+      typing.textContent = '';
+      for (const ch of a) {
+        if (token !== run) return;
+        typing.textContent += ch;
+        body.scrollTop = body.scrollHeight;
+        await sleep(12);
+      }
+    }
+
+    async function autoLoop() {
+      const token = run;
+      for (let i = 0; ; i = (i + 1) % QA.length) {
+        if (i === 0 && body.children.length) {
+          await sleep(3200);
+          if (token !== run) return;
+          body.innerHTML = '';
+        }
+        await play(i, token);
+        if (token !== run) return;
+        await sleep(3600);
+        if (token !== run) return;
+      }
+    }
+
+    const playChosen = (idx) => {
+      run++;
+      body.innerHTML = '';
+      play(idx, run);
+    };
+
+    QA.forEach(({ q }, i) => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'suggest-chip';
+      b.textContent = q;
+      b.addEventListener('click', () => playChosen(i));
+      suggestEl.appendChild(b);
+    });
+
+    let next = 1;
+    sendBtn.addEventListener('click', () => {
+      playChosen(next % QA.length);
+      next++;
+    });
+
+    // Start the chat only when it scrolls into view.
+    const start = () => {
+      if (started) return;
+      started = true;
+      if (reduce) {
+        bubble('user').textContent = QA[0].q;
+        bubble('assistant').textContent = QA[0].a;
+      } else {
+        autoLoop();
+      }
+    };
+    if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver((entries) => {
+        if (entries.some((e) => e.isIntersecting)) {
+          start();
+          io.disconnect();
+        }
+      });
+      io.observe(body);
+    } else {
+      start();
+    }
+  })();
 </script>
 
 <style>
-  .contact-inner {
-    text-align: center;
-    display: flex;
-    flex-direction: column;
+  .contact-grid {
+    display: grid;
+    grid-template-columns: 1.05fr 0.95fr;
+    gap: clamp(2rem, 5vw, 4rem);
     align-items: center;
   }
   .contact-index {
@@ -78,25 +221,22 @@ import Icon from './Icon.astro';
     margin: 0 0 0.75rem;
   }
   .contact-title {
-    justify-content: center;
     font-size: clamp(2rem, 6vw, 3rem);
-  }
-  .contact-title::after {
-    display: none;
+    font-weight: 800;
+    margin: 0 0 1rem;
   }
   .contact-lead {
     max-width: 48ch;
     color: var(--text-muted);
-    font-size: 1.1rem;
-    margin: 1rem 0 1.75rem;
+    font-size: 1.05rem;
+    margin: 0 0 1.75rem;
   }
   .contact-actions {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    justify-content: center;
     gap: 0.85rem;
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
   }
   .email-pill {
     display: inline-flex;
@@ -151,5 +291,169 @@ import Icon from './Icon.astro';
     color: var(--accent);
     border-color: var(--accent);
     transform: translateY(-2px);
+  }
+
+  /* Chat card */
+  .chat {
+    display: flex;
+    flex-direction: column;
+    background: #221a15;
+    border: 1px solid #3b2e24;
+    border-radius: var(--radius);
+    box-shadow:
+      0 24px 60px rgba(20, 15, 10, 0.35),
+      0 8px 28px color-mix(in srgb, var(--accent) 14%, transparent);
+    overflow: hidden;
+  }
+  .chat-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    padding: 0.75rem 1.1rem;
+    background: #2a2018;
+    border-bottom: 1px solid #3b2e24;
+  }
+  .chat-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #4ade80;
+  }
+  .chat-title {
+    color: #b8a99b;
+    font-size: 0.82rem;
+    font-weight: 500;
+  }
+  .chat-body {
+    height: 13.5rem;
+    overflow-y: auto;
+    padding: 1.1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    scrollbar-width: thin;
+    scrollbar-color: #443528 transparent;
+  }
+  .chat-suggest {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    padding: 0 1.1rem 0.8rem;
+  }
+  .chat-input {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    border-top: 1px solid #3b2e24;
+    background: #2a2018;
+    padding: 0.65rem 0.75rem 0.65rem 1rem;
+    font-size: 0.85rem;
+  }
+  .chat-prompt {
+    flex: 1;
+    min-height: 1.3em;
+    color: #ece4d9;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+  .chat-prompt:empty::before {
+    content: 'Ask something about Tibo…';
+    color: #75685c;
+  }
+  .chat-send {
+    display: grid;
+    place-items: center;
+    width: 2.1rem;
+    height: 2.1rem;
+    flex-shrink: 0;
+    border: none;
+    border-radius: 9px;
+    background: var(--accent);
+    color: var(--accent-contrast);
+    cursor: pointer;
+    transition: transform 0.15s ease, background 0.15s ease;
+  }
+  .chat-send:hover {
+    background: var(--accent-hover);
+  }
+  .chat-send.pulse {
+    transform: scale(0.85);
+  }
+
+  @media (max-width: 860px) {
+    .contact-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<!-- Styles for chat elements injected at runtime (scoped styles can't reach them) -->
+<style is:global>
+  .chat-body .bubble {
+    max-width: 86%;
+    padding: 0.55rem 0.85rem;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    line-height: 1.55;
+    color: #ece4d9;
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+  }
+  .chat-body .bubble.user {
+    align-self: flex-end;
+    background: var(--accent);
+    color: var(--accent-contrast);
+    border-bottom-right-radius: 4px;
+  }
+  .chat-body .bubble.assistant {
+    align-self: flex-start;
+    background: #2e241b;
+    border: 1px solid #3b2e24;
+    border-bottom-left-radius: 4px;
+  }
+  .chat-body .bubble.typing {
+    display: inline-flex;
+    gap: 5px;
+    padding: 0.8rem 0.9rem;
+  }
+  .chat-body .bubble.typing span {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #a99a8c;
+    animation: chat-bounce 1.2s ease-in-out infinite;
+  }
+  .chat-body .bubble.typing span:nth-child(2) {
+    animation-delay: 0.15s;
+  }
+  .chat-body .bubble.typing span:nth-child(3) {
+    animation-delay: 0.3s;
+  }
+  @keyframes chat-bounce {
+    0%,
+    60%,
+    100% {
+      transform: none;
+      opacity: 0.5;
+    }
+    30% {
+      transform: translateY(-4px);
+      opacity: 1;
+    }
+  }
+  .chat-suggest .suggest-chip {
+    font-size: 0.75rem;
+    color: #b8a99b;
+    background: #2a2018;
+    border: 1px solid #3b2e24;
+    border-radius: 999px;
+    padding: 0.3rem 0.7rem;
+    cursor: pointer;
+    transition: color 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
+  }
+  .chat-suggest .suggest-chip:hover {
+    color: #f4ede4;
+    border-color: var(--accent);
+    transform: translateY(-1px);
   }
 </style>
