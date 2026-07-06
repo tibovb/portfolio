@@ -3,20 +3,20 @@
    ───────────────────────────────────────────────────────────── */
 
 :root {
-  /* Brand accent — ember */
-  --accent: #c2410c;
-  --accent-hover: #9a3412;
-  --accent-contrast: #ffffff;
-  --hue-icon-l: 34%;
+  /* One committed theme: cinematic dark with a glowing ember accent */
+  --accent: #ff6a2b;
+  --accent-hover: #ff8a55;
+  --accent-contrast: #16120e;
+  --hue-icon-l: 68%;
 
-  /* Light theme (default): warm paper & ink */
-  --bg: #faf8f5;
-  --bg-elevated: #f3efe9;
-  --bg-subtle: #ece7df;
-  --border: #ddd6cb;
-  --text: #1c1917;
-  --text-muted: #57534e;
-  --shadow: 0 1px 2px rgba(28, 25, 23, 0.05), 0 8px 24px rgba(28, 25, 23, 0.07);
+  --bg: #0d0c0b;
+  --bg-elevated: #161311;
+  --bg-subtle: #1e1a16;
+  --border: #2b2620;
+  --text: #f0ebe4;
+  --text-muted: #a39c92;
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.35), 0 12px 32px rgba(0, 0, 0, 0.45);
+  --glow: 0 0 32px color-mix(in srgb, var(--accent) 22%, transparent);
 
   /* Layout */
   --max-width: 1080px;
@@ -29,51 +29,7 @@
     'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   --font-mono: 'JetBrains Mono Variable', ui-monospace, SFMono-Regular, 'SF Mono',
     Menlo, Consolas, monospace;
-}
-
-/* Dark theme — follows the OS by default… */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --accent: #f97316;
-    --accent-hover: #fb923c;
-    --accent-contrast: #1c1917;
-  --hue-icon-l: 68%;
-    --bg: #131110;
-    --bg-elevated: #1b1815;
-    --bg-subtle: #23201c;
-    --border: #2f2a25;
-    --text: #ede8e2;
-    --text-muted: #a8a29e;
-    --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.35);
-  }
-}
-
-/* …and can be forced by the header toggle (wins over OS). */
-:root[data-theme='light'] {
-  --accent: #c2410c;
-  --accent-hover: #9a3412;
-  --accent-contrast: #ffffff;
-  --hue-icon-l: 34%;
-  --bg: #faf8f5;
-  --bg-elevated: #f3efe9;
-  --bg-subtle: #ece7df;
-  --border: #ddd6cb;
-  --text: #1c1917;
-  --text-muted: #57534e;
-  --shadow: 0 1px 2px rgba(28, 25, 23, 0.05), 0 8px 24px rgba(28, 25, 23, 0.07);
-}
-:root[data-theme='dark'] {
-  --accent: #f97316;
-  --accent-hover: #fb923c;
-  --accent-contrast: #1c1917;
-  --hue-icon-l: 68%;
-  --bg: #131110;
-  --bg-elevated: #1b1815;
-  --bg-subtle: #23201c;
-  --border: #2f2a25;
-  --text: #ede8e2;
-  --text-muted: #a8a29e;
-  --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.35);
+  color-scheme: dark;
 }
 
 *,
@@ -85,6 +41,13 @@
 html {
   scroll-behavior: smooth;
   scroll-padding-top: 5rem;
+}
+/* Lenis drives scrolling when active — native smoothing would fight it */
+html.lenis {
+  scroll-behavior: auto;
+}
+html.lenis body {
+  min-height: 100vh;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -148,7 +111,7 @@ img {
 }
 
 section {
-  padding-block: clamp(3.5rem, 8vw, 6rem);
+  padding-block: clamp(4rem, 10vw, 7.5rem);
 }
 
 .section-title {
@@ -173,11 +136,11 @@ section {
 /* Scroll-reveal — rises, sharpens, and settles */
 [data-reveal] {
   opacity: 0;
-  transform: translateY(22px) scale(0.985);
-  filter: blur(5px);
-  transition: opacity 0.65s cubic-bezier(0.22, 1, 0.36, 1),
-    transform 0.65s cubic-bezier(0.22, 1, 0.36, 1),
-    filter 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+  transform: translateY(34px) scale(0.98);
+  filter: blur(6px);
+  transition: opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.9s cubic-bezier(0.22, 1, 0.36, 1),
+    filter 0.9s cubic-bezier(0.22, 1, 0.36, 1);
 }
 [data-reveal].is-visible {
   opacity: 1;

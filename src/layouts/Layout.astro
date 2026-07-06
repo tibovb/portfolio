@@ -34,15 +34,6 @@ const canonical = new URL(Astro.url.pathname, Astro.site).href;
     <meta property="og:url" content={canonical} />
     <meta name="twitter:card" content="summary_large_image" />
 
-    <!-- Apply saved theme before paint to avoid a flash -->
-    <script is:inline>
-      (() => {
-        const stored = localStorage.getItem('theme');
-        if (stored === 'light' || stored === 'dark') {
-          document.documentElement.setAttribute('data-theme', stored);
-        }
-      })();
-    </script>
   </head>
   <body>
     <a href="#main" class="skip-link">Skip to content</a>
@@ -93,6 +84,30 @@ const canonical = new URL(Astro.url.pathname, Astro.site).href;
         }
         update();
       })();
+    </script>
+
+    <!-- Inertia smooth-scrolling (skipped for reduced-motion users) -->
+    <script>
+      import Lenis from 'lenis';
+
+      if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        const lenis = new Lenis({ duration: 1.15 });
+        const raf = (time: number) => {
+          lenis.raf(time);
+          requestAnimationFrame(raf);
+        };
+        requestAnimationFrame(raf);
+
+        // Route anchor clicks through Lenis for a smooth glide.
+        document.querySelectorAll<HTMLAnchorElement>('a[href^="#"]').forEach((a) => {
+          a.addEventListener('click', (e) => {
+            const target = document.querySelector(a.getAttribute('href') || '');
+            if (!target) return;
+            e.preventDefault();
+            lenis.scrollTo(target as HTMLElement, { offset: -70 });
+          });
+        });
+      }
     </script>
 
     <!-- Subtle scroll-reveal for elements marked [data-reveal] -->
