@@ -1,0 +1,188 @@
+---
+import { site } from '../data/site';
+import { Image } from 'astro:assets';
+
+// Drop a photo at src/assets/portrait.(jpg|jpeg|png|webp) and it shows up here automatically.
+const portraits = import.meta.glob<{ default: ImageMetadata }>(
+  '../assets/portrait.{jpg,jpeg,png,webp}',
+  { eager: true }
+);
+const portrait = Object.values(portraits)[0]?.default;
+
+// Age derived from birthday — refreshed on every build.
+function getAge(iso: string): number {
+  const b = new Date(iso);
+  const now = new Date();
+  let age = now.getFullYear() - b.getFullYear();
+  const m = now.getMonth() - b.getMonth();
+  if (m < 0 || (m === 0 && now.getDate() < b.getDate())) age--;
+  return age;
+}
+const age = site.birthday ? getAge(site.birthday) : null;
+---
+
+<section id="about" aria-labelledby="about-title">
+  <div class="container">
+    <h2 id="about-title" class="section-title" data-index="01." data-reveal>About</h2>
+    <div class="about-grid">
+      <div class="prose" data-reveal>
+        {site.about.map((p) => <p>{p}</p>)}
+      </div>
+      <aside class="side" data-reveal data-delay="1">
+        <div class="facts">
+        <div class="facts-header">
+          {
+            portrait && (
+              <div class="portrait">
+                <Image src={portrait} alt={`Portrait of ${site.name}`} loading="lazy" />
+              </div>
+            )
+          }
+          <dl class="header-facts">
+            {
+              site.location && (
+                <div class="fact">
+                  <dt>Location</dt>
+                  <dd>{site.location}</dd>
+                </div>
+              )
+            }
+            {
+              age !== null && (
+                <div class="fact">
+                  <dt>Age</dt>
+                  <dd>{age}</dd>
+                </div>
+              )
+            }
+          </dl>
+        </div>
+        <dl>
+          <div class="fact">
+            <dt>Role</dt>
+            <dd>{site.role}</dd>
+          </div>
+          {
+            site.education && (
+              <div class="fact">
+                <dt>Education</dt>
+                <dd>
+                  {site.education.degree} — {site.education.field}
+                  <span class="fact-sub">{site.education.school}</span>
+                </dd>
+              </div>
+            )
+          }
+          <div class="fact">
+            <dt>Email</dt>
+            <dd><a href={`mailto:${site.email}`}>{site.email}</a></dd>
+          </div>
+          {
+            site.interests?.length > 0 && (
+              <div class="fact">
+                <dt>Interests</dt>
+                <dd class="interests">
+                  {site.interests.map((item) => (
+                    <span class="chip">{item}</span>
+                  ))}
+                </dd>
+              </div>
+            )
+          }
+        </dl>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<style>
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1.6fr 1fr;
+    gap: 2.5rem;
+    align-items: start;
+  }
+  .prose p {
+    margin: 0 0 1.1rem;
+    color: var(--text-muted);
+    font-size: 1.05rem;
+  }
+  .prose p:last-child {
+    margin-bottom: 0;
+  }
+  .side {
+    display: grid;
+    gap: 1.25rem;
+    align-content: start;
+  }
+  .facts-header {
+    display: flex;
+    align-items: center;
+    gap: 1.4rem;
+    padding-bottom: 1.4rem;
+    margin-bottom: 1.4rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .portrait {
+    width: 6rem;
+    flex-shrink: 0;
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow), 0 0 0 3px color-mix(in srgb, var(--accent) 14%, transparent);
+  }
+  .portrait :global(img) {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+  .header-facts {
+    display: grid;
+    gap: 0.85rem;
+  }
+  .facts {
+    padding: 1.5rem;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+  }
+  dl {
+    margin: 0;
+    display: grid;
+    gap: 1.1rem;
+  }
+  .fact dt {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+    margin-bottom: 0.15rem;
+  }
+  .fact dd {
+    margin: 0;
+    font-weight: 600;
+    word-break: break-word;
+  }
+  .fact-sub {
+    display: block;
+    font-weight: 400;
+    font-size: 0.88rem;
+    color: var(--text-muted);
+    margin-top: 0.1rem;
+  }
+  .interests {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    padding-top: 0.15rem;
+  }
+
+  @media (max-width: 720px) {
+    .about-grid {
+      grid-template-columns: 1fr;
+      gap: 1.75rem;
+    }
+  }
+</style>

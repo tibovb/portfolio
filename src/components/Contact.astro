@@ -1,0 +1,153 @@
+---
+import { site } from '../data/site';
+import Icon from './Icon.astro';
+---
+
+<section id="contact" aria-labelledby="contact-title">
+  <div class="container contact-inner">
+    <p class="contact-index" data-reveal>04. What’s next?</p>
+    <h2 id="contact-title" class="section-title contact-title" data-reveal>Get in touch</h2>
+    <p class="contact-lead" data-reveal data-delay="1">
+      I’m open to freelance projects, collaborations, and interesting conversations
+      about integration architecture, mobile development, or software for your sport.
+      Feel free to reach out.
+    </p>
+    <div class="contact-actions" data-reveal data-delay="2">
+      <a href={`mailto:${site.email}`} class="btn btn-primary">
+        <Icon name="mail" size={18} />
+        Say hello
+      </a>
+      <button class="email-pill" type="button" id="copy-email" data-email={site.email} title="Copy email address">
+        <span class="email-text">{site.email}</span>
+        <span class="pill-icon icon-copy"><Icon name="copy" size={16} /></span>
+        <span class="pill-icon icon-check"><Icon name="check" size={16} /></span>
+        <span class="sr-only">Copy email address to clipboard</span>
+      </button>
+    </div>
+
+    <div class="socials" data-reveal data-delay="2">
+      {
+        site.socials.map((s) => (
+          <a href={s.href} class="social" aria-label={s.label} target={s.href.startsWith('http') ? '_blank' : undefined} rel={s.href.startsWith('http') ? 'noopener noreferrer' : undefined}>
+            <Icon name={s.icon} />
+          </a>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<script is:inline>
+  (() => {
+    const btn = document.getElementById('copy-email');
+    if (!btn) return;
+    let timer;
+    btn.addEventListener('click', async () => {
+      const email = btn.getAttribute('data-email');
+      try {
+        await navigator.clipboard.writeText(email);
+      } catch {
+        // Clipboard API unavailable (non-secure context) — fall back.
+        const ta = document.createElement('textarea');
+        ta.value = email;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        ta.remove();
+      }
+      btn.classList.add('copied');
+      clearTimeout(timer);
+      timer = setTimeout(() => btn.classList.remove('copied'), 2000);
+    });
+  })();
+</script>
+
+<style>
+  .contact-inner {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .contact-index {
+    font-family: var(--font-mono);
+    font-size: 0.95rem;
+    color: var(--accent);
+    margin: 0 0 0.75rem;
+  }
+  .contact-title {
+    justify-content: center;
+    font-size: clamp(2rem, 6vw, 3rem);
+  }
+  .contact-title::after {
+    display: none;
+  }
+  .contact-lead {
+    max-width: 48ch;
+    color: var(--text-muted);
+    font-size: 1.1rem;
+    margin: 1rem 0 1.75rem;
+  }
+  .contact-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0.85rem;
+    margin-bottom: 2rem;
+  }
+  .email-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.6rem 1.1rem;
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    color: var(--text);
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: border-color 0.15s ease;
+  }
+  .email-pill:hover {
+    border-color: var(--accent);
+  }
+  .pill-icon {
+    display: inline-grid;
+    place-items: center;
+    color: var(--text-muted);
+  }
+  .icon-check {
+    display: none;
+    color: #22c55e;
+  }
+  .email-pill.copied .icon-copy {
+    display: none;
+  }
+  .email-pill.copied .icon-check {
+    display: inline-grid;
+  }
+  .email-pill.copied {
+    border-color: #22c55e;
+  }
+  .socials {
+    display: flex;
+    gap: 0.5rem;
+  }
+  .social {
+    display: grid;
+    place-items: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: var(--radius-sm);
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+    transition: color 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
+  }
+  .social:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+    transform: translateY(-2px);
+  }
+</style>

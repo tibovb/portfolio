@@ -1,0 +1,165 @@
+---
+import { projects } from '../data/projects';
+import Icon from './Icon.astro';
+---
+
+<section id="projects" aria-labelledby="projects-title">
+  <div class="container">
+    <h2 id="projects-title" class="section-title" data-index="03." data-reveal>Projects</h2>
+    <div class="projects-grid">
+      {
+        projects.map((project, i) => (
+          <article class:list={['card', { featured: project.featured }]} data-reveal data-delay={String(Math.min(i, 3))} style={`--card-hue: ${project.hue ?? 245}`}>
+            <div class="banner" aria-hidden="true">
+              <span class="banner-icon">
+                <Icon name={project.icon ?? 'code'} size={26} />
+              </span>
+              <div class="card-links">
+                {project.source && (
+                  <a href={project.source} aria-label={`${project.title} source code`} target="_blank" rel="noopener noreferrer">
+                    <Icon name="github" size={18} />
+                  </a>
+                )}
+                {project.demo && (
+                  <a href={project.demo} aria-label={`${project.title} live demo`} target="_blank" rel="noopener noreferrer">
+                    <Icon name="external" size={18} />
+                  </a>
+                )}
+              </div>
+            </div>
+
+            <div class="card-body">
+            <h3 class="card-title">
+              {project.demo ? (
+                <a href={project.demo} target="_blank" rel="noopener noreferrer">{project.title}</a>
+              ) : (
+                project.title
+              )}
+            </h3>
+            <p class="card-desc">{project.description}</p>
+
+            <ul class="tags">
+              {project.tags.map((tag) => (
+                <li>{tag}</li>
+              ))}
+            </ul>
+            </div>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.25rem;
+  }
+  .card {
+    display: flex;
+    flex-direction: column;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+  .card:hover {
+    transform: translateY(-4px);
+    border-color: color-mix(in srgb, var(--accent) 50%, var(--border));
+    box-shadow: var(--shadow);
+  }
+  .card.featured {
+    border-color: color-mix(in srgb, var(--accent) 45%, var(--border));
+  }
+  /* Gradient banner — hue comes from the project data */
+  .banner {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.9rem 1.5rem;
+    background:
+      radial-gradient(
+        14rem 8rem at 85% -30%,
+        hsl(calc(var(--card-hue) + 40) 80% 65% / 0.28),
+        transparent 70%
+      ),
+      linear-gradient(
+        135deg,
+        hsl(var(--card-hue) 75% 60% / 0.22),
+        hsl(var(--card-hue) 70% 50% / 0.08)
+      );
+    border-bottom: 1px solid var(--border);
+  }
+  .banner-icon {
+    display: grid;
+    place-items: center;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 12px;
+    color: hsl(var(--card-hue) 85% 72%);
+    background: hsl(var(--card-hue) 70% 55% / 0.18);
+    border: 1px solid hsl(var(--card-hue) 70% 60% / 0.35);
+    backdrop-filter: blur(4px);
+    transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .card:hover .banner-icon {
+    transform: scale(1.12) rotate(-4deg);
+  }
+  .card-body {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    padding: 1.35rem 1.5rem 1.5rem;
+  }
+  .card-links {
+    display: flex;
+    gap: 0.5rem;
+  }
+  .card-links a {
+    display: grid;
+    place-items: center;
+    width: 2.1rem;
+    height: 2.1rem;
+    border-radius: 9px;
+    color: var(--text);
+    background: color-mix(in srgb, var(--bg) 55%, transparent);
+    border: 1px solid var(--border);
+    backdrop-filter: blur(4px);
+    transition: color 0.15s ease, border-color 0.15s ease;
+  }
+  .card-links a:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+  .card-title {
+    font-size: 1.2rem;
+    margin-bottom: 0.6rem;
+  }
+  .card-title a {
+    color: var(--text);
+  }
+  .card-title a:hover {
+    color: var(--accent);
+  }
+  .card-desc {
+    color: var(--text-muted);
+    font-size: 0.98rem;
+    margin: 0 0 1.25rem;
+    flex: 1;
+  }
+  .tags {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 0.9rem;
+    margin: 0;
+    padding: 0;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--text-muted);
+  }
+</style>

@@ -1,0 +1,35 @@
+---
+import { site } from '../data/site';
+---
+
+<footer class="footer">
+  <div class="container footer-inner">
+    <p>
+      Built with <a href="https://astro.build" target="_blank" rel="noopener noreferrer">Astro</a>
+      &middot; Designed &amp; coded by {site.name}
+    </p>
+    <p class="muted">&copy; {new Date().getFullYear()} {site.name}. All rights reserved.</p>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    border-top: 1px solid var(--border);
+    padding-block: 2rem;
+  }
+  .footer-inner {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 1.5rem;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+  }
+  .footer p {
+    margin: 0;
+  }
+  .muted {
+    opacity: 0.85;
+  }
+</style>

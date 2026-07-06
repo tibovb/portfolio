@@ -1,0 +1,507 @@
+---
+import { site } from '../data/site';
+import Icon from './Icon.astro';
+---
+
+<section class="hero" aria-labelledby="hero-title">
+  <div class="hero-bg" aria-hidden="true"></div>
+  <div class="container hero-inner">
+    <div class="hero-copy">
+      <p class="status" data-reveal>
+        <span class="status-dot"></span>
+        Available for freelance projects
+      </p>
+      <p class="eyebrow" data-reveal data-delay="1">Hi, my name is</p>
+      <h1 id="hero-title" data-reveal data-delay="1">{site.name}</h1>
+      <p class="role" data-reveal data-delay="2">{site.role}</p>
+      <p class="tagline" data-reveal data-delay="2">{site.tagline}</p>
+
+      <div class="actions" data-reveal data-delay="3">
+        <a href="#projects" class="btn btn-primary">
+          View my work
+          <Icon name="arrow" size={18} />
+        </a>
+        <a href="#contact" class="btn btn-ghost">Get in touch</a>
+      </div>
+
+      <div class="socials" data-reveal data-delay="3">
+        {
+          site.socials.map((s) => (
+            <a href={s.href} class="social" aria-label={s.label} target={s.href.startsWith('http') ? '_blank' : undefined} rel={s.href.startsWith('http') ? 'noopener noreferrer' : undefined}>
+              <Icon name={s.icon} />
+            </a>
+          ))
+        }
+      </div>
+    </div>
+
+    <div class="chat" data-reveal data-delay="2">
+      <div class="terminal-bar">
+        <span class="dot red"></span>
+        <span class="dot yellow"></span>
+        <span class="dot green"></span>
+        <span class="terminal-title">ask-tibo · AI assistant</span>
+      </div>
+      <div class="chat-body" id="chat-body" role="log" aria-live="off"></div>
+      <div class="chat-suggest" id="chat-suggest"></div>
+      <div class="chat-input">
+        <span class="chat-prompt" id="chat-prompt"></span>
+        <button class="chat-send" id="chat-send" type="button" aria-label="Send question">
+          <Icon name="arrow" size={16} />
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    min-height: min(92vh, 900px);
+    display: flex;
+    align-items: center;
+    padding-block: clamp(4rem, 12vw, 7rem);
+    overflow: hidden;
+  }
+  .hero-inner {
+    display: grid;
+    grid-template-columns: 1.05fr 0.95fr;
+    align-items: center;
+    gap: clamp(2rem, 5vw, 4rem);
+  }
+
+  /* AI chat card */
+  .chat {
+    display: flex;
+    flex-direction: column;
+    background: #0f0f16;
+    border: 1px solid #262635;
+    border-radius: var(--radius);
+    box-shadow:
+      0 24px 60px rgba(0, 0, 0, 0.35),
+      0 8px 28px color-mix(in srgb, var(--accent) 16%, transparent);
+    overflow: hidden;
+  }
+  .terminal-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.7rem 1rem;
+    background: #16161f;
+    border-bottom: 1px solid #262635;
+  }
+  .dot {
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+  }
+  .dot.red {
+    background: #ff5f57;
+  }
+  .dot.yellow {
+    background: #febc2e;
+  }
+  .dot.green {
+    background: #28c840;
+  }
+  .terminal-title {
+    margin-left: 0.5rem;
+    color: #8888a0;
+    font-size: 0.78rem;
+    font-family: var(--font-mono);
+  }
+  .chat-body {
+    height: 14.5rem;
+    overflow-y: auto;
+    padding: 1.1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    scrollbar-width: thin;
+    scrollbar-color: #2a2a36 transparent;
+  }
+  .chat-suggest {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    padding: 0 1.1rem 0.8rem;
+  }
+  .chat-input {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    border-top: 1px solid #262635;
+    background: #16161f;
+    padding: 0.65rem 0.75rem 0.65rem 1rem;
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+  }
+  .chat-prompt {
+    flex: 1;
+    min-height: 1.3em;
+    color: #d6d6e4;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+  .chat-prompt:empty::before {
+    content: 'Ask something about Tibo…';
+    color: #55556a;
+  }
+  .chat-send {
+    display: grid;
+    place-items: center;
+    width: 2.1rem;
+    height: 2.1rem;
+    flex-shrink: 0;
+    border: none;
+    border-radius: 9px;
+    background: var(--accent);
+    color: #fff;
+    cursor: pointer;
+    transition: transform 0.15s ease, background 0.15s ease;
+  }
+  .chat-send:hover {
+    background: var(--accent-hover);
+  }
+  .chat-send.pulse {
+    transform: scale(0.85);
+  }
+
+  @media (max-width: 920px) {
+    .hero-inner {
+      grid-template-columns: 1fr;
+    }
+    .chat {
+      display: none;
+    }
+  }
+  /* Layered background: subtle grid + accent glow */
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background-image:
+      radial-gradient(
+        50rem 28rem at 15% -10%,
+        color-mix(in srgb, var(--accent) 20%, transparent),
+        transparent 55%
+      ),
+      linear-gradient(to right, var(--border) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--border) 1px, transparent 1px);
+    background-size: 100% 100%, 3.5rem 3.5rem, 3.5rem 3.5rem;
+    opacity: 0.55;
+    -webkit-mask-image: radial-gradient(70% 70% at 30% 20%, #000 40%, transparent 100%);
+    mask-image: radial-gradient(70% 70% at 30% 20%, #000 40%, transparent 100%);
+  }
+  /* Slow-drifting aurora glows */
+  .hero-bg::before,
+  .hero-bg::after {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(70px);
+  }
+  .hero-bg::before {
+    width: 34rem;
+    height: 34rem;
+    left: -10rem;
+    top: -8rem;
+    opacity: 0.5;
+    background: radial-gradient(
+      circle,
+      color-mix(in srgb, var(--accent) 40%, transparent),
+      transparent 65%
+    );
+    animation: drift-a 18s ease-in-out infinite alternate;
+  }
+  .hero-bg::after {
+    width: 26rem;
+    height: 26rem;
+    right: -8rem;
+    bottom: -10rem;
+    opacity: 0.35;
+    background: radial-gradient(circle, hsl(190 80% 60% / 0.35), transparent 65%);
+    animation: drift-b 22s ease-in-out infinite alternate;
+  }
+  @keyframes drift-a {
+    to {
+      transform: translate(7rem, 4rem) scale(1.15);
+    }
+  }
+  @keyframes drift-b {
+    to {
+      transform: translate(-6rem, -5rem) scale(1.1);
+    }
+  }
+  .status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    padding: 0.4rem 0.85rem;
+    margin: 0 0 1.5rem;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    width: fit-content;
+  }
+  .status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #22c55e;
+    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.5);
+    animation: pulse 2.4s ease-out infinite;
+  }
+  @keyframes pulse {
+    0% {
+      box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.45);
+    }
+    70% {
+      box-shadow: 0 0 0 7px rgba(34, 197, 94, 0);
+    }
+    100% {
+      box-shadow: 0 0 0 0 rgba(34, 197, 94, 0);
+    }
+  }
+  .eyebrow {
+    color: var(--accent);
+    font-family: var(--font-mono);
+    font-size: 0.95rem;
+    margin: 0 0 0.75rem;
+  }
+  h1 {
+    font-size: clamp(2.5rem, 8vw, 4.75rem);
+    font-weight: 800;
+    letter-spacing: -0.035em;
+    background: linear-gradient(
+      135deg,
+      var(--text) 30%,
+      color-mix(in srgb, var(--text) 55%, var(--accent))
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .role {
+    font-size: clamp(1.4rem, 5vw, 2.4rem);
+    font-weight: 700;
+    color: var(--text-muted);
+    margin: 0.25rem 0 1.25rem;
+  }
+  .tagline {
+    max-width: 46ch;
+    font-size: 1.1rem;
+    color: var(--text-muted);
+    margin: 0 0 2rem;
+  }
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.85rem;
+    margin-bottom: 2.25rem;
+  }
+  .socials {
+    display: flex;
+    gap: 0.5rem;
+  }
+  .social {
+    display: grid;
+    place-items: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: var(--radius-sm);
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+    transition: color 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
+  }
+  .social:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+    transform: translateY(-2px);
+  }
+</style>
+
+<!-- Styles for chat elements injected at runtime (scoped styles can't reach them) -->
+<style is:global>
+  .chat-body .bubble {
+    max-width: 86%;
+    padding: 0.55rem 0.85rem;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    line-height: 1.55;
+    color: #d6d6e4;
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+  }
+  .chat-body .bubble.user {
+    align-self: flex-end;
+    background: var(--accent);
+    color: #fff;
+    border-bottom-right-radius: 4px;
+  }
+  .chat-body .bubble.assistant {
+    align-self: flex-start;
+    background: #1b1b26;
+    border: 1px solid #262635;
+    border-bottom-left-radius: 4px;
+  }
+  .chat-body .bubble.typing {
+    display: inline-flex;
+    gap: 5px;
+    padding: 0.8rem 0.9rem;
+  }
+  .chat-body .bubble.typing span {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #8888a0;
+    animation: chat-bounce 1.2s ease-in-out infinite;
+  }
+  .chat-body .bubble.typing span:nth-child(2) {
+    animation-delay: 0.15s;
+  }
+  .chat-body .bubble.typing span:nth-child(3) {
+    animation-delay: 0.3s;
+  }
+  @keyframes chat-bounce {
+    0%,
+    60%,
+    100% {
+      transform: none;
+      opacity: 0.5;
+    }
+    30% {
+      transform: translateY(-4px);
+      opacity: 1;
+    }
+  }
+  .chat-suggest .suggest-chip {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: #a0a0b8;
+    background: #16161f;
+    border: 1px solid #262635;
+    border-radius: 999px;
+    padding: 0.3rem 0.7rem;
+    cursor: pointer;
+    transition: color 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
+  }
+  .chat-suggest .suggest-chip:hover {
+    color: #fff;
+    border-color: var(--accent);
+    transform: translateY(-1px);
+  }
+</style>
+
+<script is:inline>
+  (() => {
+    const body = document.getElementById('chat-body');
+    const promptEl = document.getElementById('chat-prompt');
+    const sendBtn = document.getElementById('chat-send');
+    const suggestEl = document.getElementById('chat-suggest');
+    if (!body || !promptEl || !sendBtn || !suggestEl) return;
+
+    const QA = [
+      {
+        q: 'Who is Tibo?',
+        a: 'Tibo is a Microsoft Integration Consultant at delaware Benelux. After hours he runs his own software business and builds DRIVN Health, a platform for powerlifters.',
+      },
+      {
+        q: 'What does he work with?',
+        a: 'Azure Integration Services on the enterprise side, React Native and TypeScript on the product side. AI tools like Claude Code are part of his daily workflow.',
+      },
+      {
+        q: 'Is he available for freelance?',
+        a: 'Yes, he is. Scroll down to the contact section or mail tibo.vanbrabandt@gmail.com and he will get back to you.',
+      },
+    ];
+
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+    let run = 0; // bump to cancel whatever is playing
+
+    const bubble = (cls) => {
+      const el = document.createElement('div');
+      el.className = 'bubble ' + cls;
+      body.appendChild(el);
+      body.scrollTop = body.scrollHeight;
+      return el;
+    };
+
+    async function play(idx, token) {
+      const { q, a } = QA[idx];
+      promptEl.textContent = '';
+      for (const ch of q) {
+        if (token !== run) return;
+        promptEl.textContent += ch;
+        await sleep(34);
+      }
+      await sleep(400);
+      if (token !== run) return;
+      sendBtn.classList.add('pulse');
+      await sleep(220);
+      sendBtn.classList.remove('pulse');
+      promptEl.textContent = '';
+      bubble('user').textContent = q;
+      const typing = bubble('assistant typing');
+      typing.innerHTML = '<span></span><span></span><span></span>';
+      await sleep(1000);
+      if (token !== run) return void typing.remove();
+      typing.classList.remove('typing');
+      typing.textContent = '';
+      for (const ch of a) {
+        if (token !== run) return;
+        typing.textContent += ch;
+        body.scrollTop = body.scrollHeight;
+        await sleep(12);
+      }
+    }
+
+    async function autoLoop() {
+      const token = run;
+      for (let i = 0; ; i = (i + 1) % QA.length) {
+        if (i === 0 && body.children.length) {
+          await sleep(3200);
+          if (token !== run) return;
+          body.innerHTML = '';
+        }
+        await play(i, token);
+        if (token !== run) return;
+        await sleep(3600);
+        if (token !== run) return;
+      }
+    }
+
+    const playChosen = (idx) => {
+      run++;
+      body.innerHTML = '';
+      play(idx, run);
+    };
+
+    QA.forEach(({ q }, i) => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'suggest-chip';
+      b.textContent = q;
+      b.addEventListener('click', () => playChosen(i));
+      suggestEl.appendChild(b);
+    });
+
+    let next = 1;
+    sendBtn.addEventListener('click', () => {
+      playChosen(next % QA.length);
+      next++;
+    });
+
+    if (reduce) {
+      bubble('user').textContent = QA[0].q;
+      bubble('assistant').textContent = QA[0].a;
+    } else {
+      autoLoop();
+    }
+  })();
+</script>

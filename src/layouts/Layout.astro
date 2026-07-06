@@ -1,0 +1,136 @@
+---
+import '@fontsource-variable/inter';
+import '@fontsource-variable/jetbrains-mono';
+import '../styles/global.css';
+import { site } from '../data/site';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const { title = site.name, description = site.tagline } = Astro.props;
+
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href={`${import.meta.env.BASE_URL.replace(/\/$/, '')}/favicon.svg`} />
+    <meta name="generator" content={Astro.generator} />
+
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+
+    <!-- Open Graph / social -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <!-- Apply saved theme before paint to avoid a flash -->
+    <script is:inline>
+      (() => {
+        const stored = localStorage.getItem('theme');
+        if (stored === 'light' || stored === 'dark') {
+          document.documentElement.setAttribute('data-theme', stored);
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <a href="#main" class="skip-link">Skip to content</a>
+    <div class="scroll-progress" aria-hidden="true"></div>
+    <slot />
+
+    <button id="scroll-top" class="scroll-top" type="button" aria-label="Scroll back to top">
+      <svg viewBox="0 0 56 56" width="56" height="56" aria-hidden="true">
+        <circle class="ring-bg" cx="28" cy="28" r="25" fill="none" stroke-width="2.5"></circle>
+        <circle class="ring-fg" cx="28" cy="28" r="25" fill="none" stroke-width="2.5" stroke-dasharray="157" stroke-dashoffset="157"></circle>
+      </svg>
+      <span class="pct">0%</span>
+    </button>
+
+    <!-- Scroll progress: top bar + percentage ring -->
+    <script is:inline>
+      (() => {
+        const bar = document.querySelector('.scroll-progress');
+        const topBtn = document.getElementById('scroll-top');
+        const ring = topBtn && topBtn.querySelector('.ring-fg');
+        const pctEl = topBtn && topBtn.querySelector('.pct');
+        const CIRC = 157;
+        let ticking = false;
+        const update = () => {
+          const max = document.documentElement.scrollHeight - window.innerHeight;
+          const p = max > 0 ? Math.min(1, window.scrollY / max) : 0;
+          if (bar) bar.style.transform = `scaleX(${p})`;
+          if (ring) ring.style.strokeDashoffset = String(CIRC * (1 - p));
+          if (pctEl) pctEl.textContent = Math.round(p * 100) + '%';
+          if (topBtn) topBtn.classList.toggle('visible', window.scrollY > 240);
+          ticking = false;
+        };
+        window.addEventListener(
+          'scroll',
+          () => {
+            if (!ticking) {
+              ticking = true;
+              requestAnimationFrame(update);
+            }
+          },
+          { passive: true }
+        );
+        if (topBtn) {
+          topBtn.addEventListener('click', () =>
+            window.scrollTo({ top: 0, behavior: 'smooth' })
+          );
+        }
+        update();
+      })();
+    </script>
+
+    <!-- Subtle scroll-reveal for elements marked [data-reveal] -->
+    <script is:inline>
+      (() => {
+        const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const els = document.querySelectorAll('[data-reveal]');
+        if (reduce || !('IntersectionObserver' in window)) {
+          els.forEach((el) => el.classList.add('is-visible'));
+          return;
+        }
+        const io = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              // Replays every time the element scrolls into view.
+              entry.target.classList.toggle('is-visible', entry.isIntersecting);
+            });
+          },
+          { threshold: 0.12, rootMargin: '0px 0px -8% 0px' }
+        );
+        els.forEach((el) => io.observe(el));
+      })();
+    </script>
+  </body>
+</html>
+
+<style>
+  .skip-link {
+    position: absolute;
+    left: 0.5rem;
+    top: -3rem;
+    z-index: 100;
+    padding: 0.5rem 1rem;
+    background: var(--accent);
+    color: #fff;
+    border-radius: var(--radius-sm);
+    transition: top 0.15s ease;
+  }
+  .skip-link:focus {
+    top: 0.5rem;
+    color: #fff;
+  }
+</style>
