@@ -1,6 +1,8 @@
 ---
 import { site } from '../data/site';
 import Icon from './Icon.astro';
+
+const nameWords = site.name.split(' ');
 ---
 
 <section class="hero" aria-labelledby="hero-title">
@@ -11,7 +13,17 @@ import Icon from './Icon.astro';
         <span class="status-dot"></span>
         Available for freelance projects
       </p>
-      <h1 id="hero-title" data-reveal data-delay="1">{site.name}</h1>
+      <h1 id="hero-title" aria-label={site.name} data-reveal data-delay="1">
+        {
+          nameWords.map((word) => (
+            <span class="word" aria-hidden="true">
+              {word.split('').map((ch) => (
+                <span class="ltr">{ch}</span>
+              ))}
+            </span>
+          ))
+        }
+      </h1>
       <p class="role" data-reveal data-delay="2">{site.role}</p>
       <p class="tagline" data-reveal data-delay="2">{site.tagline}</p>
 
@@ -229,7 +241,20 @@ import Icon from './Icon.astro';
     font-size: clamp(2.6rem, 8vw, 5rem);
     font-weight: 800;
     letter-spacing: -0.02em;
+    line-height: 1.05;
     color: var(--text);
+  }
+  h1 .word {
+    display: inline-block;
+    white-space: nowrap;
+    margin-right: 0.22em;
+  }
+  h1 .word:last-child {
+    margin-right: 0;
+  }
+  h1 :global(.ltr) {
+    display: inline-block;
+    font-weight: 800;
   }
   .role {
     font-family: var(--font-display);
@@ -448,5 +473,36 @@ import Icon from './Icon.astro';
     } else {
       autoLoop();
     }
+  })();
+
+  // Kinetic name: letters lose weight near the cursor, like ink melting away.
+  (() => {
+    const fine = window.matchMedia('(pointer: fine)').matches;
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const letters = Array.from(document.querySelectorAll('#hero-title .ltr'));
+    if (!fine || reduce || !letters.length) return;
+    let raf = null;
+    let mx = -1e4;
+    let my = -1e4;
+    const RADIUS = 200;
+    const update = () => {
+      raf = null;
+      for (const el of letters) {
+        const r = el.getBoundingClientRect();
+        const dx = r.left + r.width / 2 - mx;
+        const dy = r.top + r.height / 2 - my;
+        const t = Math.max(0, 1 - Math.hypot(dx, dy) / RADIUS);
+        el.style.fontWeight = String(Math.round(800 - 550 * t));
+      }
+    };
+    window.addEventListener(
+      'mousemove',
+      (e) => {
+        mx = e.clientX;
+        my = e.clientY;
+        if (!raf) raf = requestAnimationFrame(update);
+      },
+      { passive: true }
+    );
   })();
 </script>
