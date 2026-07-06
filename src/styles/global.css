@@ -122,15 +122,17 @@ section {
   align-items: baseline;
   gap: 1rem;
 }
-/* Short ember dash before each section heading */
+/* A loaded barbell before each section heading */
 .section-title::before {
   content: '';
-  width: 2rem;
-  height: 4px;
-  border-radius: 2px;
-  background: var(--accent);
+  width: 2.9rem;
+  height: 16px;
   align-self: center;
   flex-shrink: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 46 16'%3E%3Crect x='0' y='7' width='46' height='2.4' rx='1.2' fill='%23e08d4d'/%3E%3Crect x='9' y='0.5' width='4.2' height='15' rx='1.6' fill='%23e08d4d'/%3E%3Crect x='14.4' y='3.2' width='3.2' height='9.6' rx='1.4' fill='%23e08d4d'/%3E%3Crect x='32.8' y='0.5' width='4.2' height='15' rx='1.6' fill='%23e08d4d'/%3E%3Crect x='28.4' y='3.2' width='3.2' height='9.6' rx='1.4' fill='%23e08d4d'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
 }
 
 /* Scroll-reveal — rises, sharpens, and settles */
