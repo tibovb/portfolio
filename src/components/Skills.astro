@@ -6,7 +6,7 @@ import { Icon as Logo } from 'astro-icon/components';
 
 <section id="skills" aria-labelledby="skills-title">
   <div class="container">
-    <h2 id="skills-title" class="section-title" data-index="02." data-reveal>Skills</h2>
+    <h2 id="skills-title" class="section-title" data-reveal>Skills</h2>
     <div class="skills-grid">
       {
         skills.map((group, i) => (
@@ -84,7 +84,7 @@ import { Icon as Logo } from 'astro-icon/components';
     width: 2.4rem;
     height: 2.4rem;
     border-radius: 10px;
-    color: hsl(var(--card-hue) 80% 68%);
+    color: hsl(var(--card-hue) 75% var(--hue-icon-l));
     background: hsl(var(--card-hue) 70% 55% / 0.14);
     border: 1px solid hsl(var(--card-hue) 65% 60% / 0.35);
     flex-shrink: 0;

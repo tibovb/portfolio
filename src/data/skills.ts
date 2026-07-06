@@ -22,7 +22,7 @@ export const skills: SkillGroup[] = [
   {
     title: 'Mobile & App Development',
     icon: 'mobile',
-    hue: 245,
+    hue: 24,
     items: [
       { label: 'React Native', logo: 'logos:react' },
       { label: 'Expo', logo: 'simple-icons:expo' },
@@ -35,7 +35,7 @@ export const skills: SkillGroup[] = [
   {
     title: 'Frontend & Languages',
     icon: 'code',
-    hue: 190,
+    hue: 42,
     items: [
       { label: 'React', logo: 'logos:react' },
       { label: 'TypeScript', logo: 'logos:typescript-icon' },
@@ -48,7 +48,7 @@ export const skills: SkillGroup[] = [
   {
     title: 'Microsoft Integration',
     icon: 'cloud',
-    hue: 210,
+    hue: 16,
     items: [
       { label: 'Azure Integration Services', logo: 'logos:microsoft-azure' },
       { label: 'Logic Apps', logo: 'logos:microsoft-azure' },
@@ -61,7 +61,7 @@ export const skills: SkillGroup[] = [
   {
     title: 'DevOps & Databases',
     icon: 'tools',
-    hue: 280,
+    hue: 4,
     items: [
       { label: 'Azure DevOps', logo: 'simple-icons:azuredevops' },
       { label: 'CI/CD Pipelines' },
@@ -74,7 +74,7 @@ export const skills: SkillGroup[] = [
   {
     title: 'AI-Driven Workflow',
     icon: 'spark',
-    hue: 330,
+    hue: 350,
     items: [
       { label: 'Claude Code', logo: 'logos:claude-icon' },
       { label: 'GitHub Copilot', logo: 'simple-icons:githubcopilot' },

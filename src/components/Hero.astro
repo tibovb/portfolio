@@ -11,7 +11,6 @@ import Icon from './Icon.astro';
         <span class="status-dot"></span>
         Available for freelance projects
       </p>
-      <p class="eyebrow" data-reveal data-delay="1">Hi, my name is</p>
       <h1 id="hero-title" data-reveal data-delay="1">{site.name}</h1>
       <p class="role" data-reveal data-delay="2">{site.role}</p>
       <p class="tagline" data-reveal data-delay="2">{site.tagline}</p>
@@ -36,11 +35,9 @@ import Icon from './Icon.astro';
     </div>
 
     <div class="chat" data-reveal data-delay="2">
-      <div class="terminal-bar">
-        <span class="dot red"></span>
-        <span class="dot yellow"></span>
-        <span class="dot green"></span>
-        <span class="terminal-title">ask-tibo · AI assistant</span>
+      <div class="chat-bar">
+        <span class="chat-dot" aria-hidden="true"></span>
+        <span class="chat-title">Ask me anything</span>
       </div>
       <div class="chat-body" id="chat-body" role="log" aria-live="off"></div>
       <div class="chat-suggest" id="chat-suggest"></div>
@@ -70,45 +67,36 @@ import Icon from './Icon.astro';
     gap: clamp(2rem, 5vw, 4rem);
   }
 
-  /* AI chat card */
+  /* Chat card — warm dark, both themes */
   .chat {
     display: flex;
     flex-direction: column;
-    background: #0f0f16;
-    border: 1px solid #262635;
+    background: #1b1815;
+    border: 1px solid #332d27;
     border-radius: var(--radius);
     box-shadow:
-      0 24px 60px rgba(0, 0, 0, 0.35),
-      0 8px 28px color-mix(in srgb, var(--accent) 16%, transparent);
+      0 24px 60px rgba(20, 15, 10, 0.35),
+      0 8px 28px color-mix(in srgb, var(--accent) 14%, transparent);
     overflow: hidden;
   }
-  .terminal-bar {
+  .chat-bar {
     display: flex;
     align-items: center;
-    gap: 0.45rem;
-    padding: 0.7rem 1rem;
-    background: #16161f;
-    border-bottom: 1px solid #262635;
+    gap: 0.55rem;
+    padding: 0.75rem 1.1rem;
+    background: #221e1a;
+    border-bottom: 1px solid #332d27;
   }
-  .dot {
-    width: 11px;
-    height: 11px;
+  .chat-dot {
+    width: 8px;
+    height: 8px;
     border-radius: 50%;
+    background: #4ade80;
   }
-  .dot.red {
-    background: #ff5f57;
-  }
-  .dot.yellow {
-    background: #febc2e;
-  }
-  .dot.green {
-    background: #28c840;
-  }
-  .terminal-title {
-    margin-left: 0.5rem;
-    color: #8888a0;
-    font-size: 0.78rem;
-    font-family: var(--font-mono);
+  .chat-title {
+    color: #b5aca1;
+    font-size: 0.82rem;
+    font-weight: 500;
   }
   .chat-body {
     height: 14.5rem;
@@ -130,22 +118,21 @@ import Icon from './Icon.astro';
     display: flex;
     align-items: center;
     gap: 0.6rem;
-    border-top: 1px solid #262635;
-    background: #16161f;
+    border-top: 1px solid #332d27;
+    background: #221e1a;
     padding: 0.65rem 0.75rem 0.65rem 1rem;
-    font-family: var(--font-mono);
-    font-size: 0.82rem;
+    font-size: 0.85rem;
   }
   .chat-prompt {
     flex: 1;
     min-height: 1.3em;
-    color: #d6d6e4;
+    color: #e8e2da;
     white-space: nowrap;
     overflow: hidden;
   }
   .chat-prompt:empty::before {
     content: 'Ask something about Tibo…';
-    color: #55556a;
+    color: #6b6259;
   }
   .chat-send {
     display: grid;
@@ -156,7 +143,7 @@ import Icon from './Icon.astro';
     border: none;
     border-radius: 9px;
     background: var(--accent);
-    color: #fff;
+    color: var(--accent-contrast);
     cursor: pointer;
     transition: transform 0.15s ease, background 0.15s ease;
   }
@@ -176,62 +163,33 @@ import Icon from './Icon.astro';
     }
   }
   /* Layered background: subtle grid + accent glow */
+  /* One quiet warm glow, nothing more */
   .hero-bg {
     position: absolute;
     inset: 0;
     z-index: -1;
     pointer-events: none;
-    background-image:
-      radial-gradient(
-        50rem 28rem at 15% -10%,
-        color-mix(in srgb, var(--accent) 20%, transparent),
-        transparent 55%
-      ),
-      linear-gradient(to right, var(--border) 1px, transparent 1px),
-      linear-gradient(to bottom, var(--border) 1px, transparent 1px);
-    background-size: 100% 100%, 3.5rem 3.5rem, 3.5rem 3.5rem;
-    opacity: 0.55;
-    -webkit-mask-image: radial-gradient(70% 70% at 30% 20%, #000 40%, transparent 100%);
-    mask-image: radial-gradient(70% 70% at 30% 20%, #000 40%, transparent 100%);
-  }
-  /* Slow-drifting aurora glows */
-  .hero-bg::before,
-  .hero-bg::after {
-    content: '';
-    position: absolute;
-    border-radius: 50%;
-    filter: blur(70px);
   }
   .hero-bg::before {
-    width: 34rem;
-    height: 34rem;
-    left: -10rem;
-    top: -8rem;
-    opacity: 0.5;
+    content: '';
+    position: absolute;
+    width: 42rem;
+    height: 30rem;
+    left: -12rem;
+    top: -10rem;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.35;
     background: radial-gradient(
       circle,
-      color-mix(in srgb, var(--accent) 40%, transparent),
+      color-mix(in srgb, var(--accent) 30%, transparent),
       transparent 65%
     );
-    animation: drift-a 18s ease-in-out infinite alternate;
-  }
-  .hero-bg::after {
-    width: 26rem;
-    height: 26rem;
-    right: -8rem;
-    bottom: -10rem;
-    opacity: 0.35;
-    background: radial-gradient(circle, hsl(190 80% 60% / 0.35), transparent 65%);
-    animation: drift-b 22s ease-in-out infinite alternate;
+    animation: drift-a 24s ease-in-out infinite alternate;
   }
   @keyframes drift-a {
     to {
-      transform: translate(7rem, 4rem) scale(1.15);
-    }
-  }
-  @keyframes drift-b {
-    to {
-      transform: translate(-6rem, -5rem) scale(1.1);
+      transform: translate(6rem, 3rem) scale(1.08);
     }
   }
   .status {
@@ -267,30 +225,18 @@ import Icon from './Icon.astro';
       box-shadow: 0 0 0 0 rgba(34, 197, 94, 0);
     }
   }
-  .eyebrow {
-    color: var(--accent);
-    font-family: var(--font-mono);
-    font-size: 0.95rem;
-    margin: 0 0 0.75rem;
-  }
   h1 {
-    font-size: clamp(2.5rem, 8vw, 4.75rem);
+    font-size: clamp(2.6rem, 8vw, 5rem);
     font-weight: 800;
-    letter-spacing: -0.035em;
-    background: linear-gradient(
-      135deg,
-      var(--text) 30%,
-      color-mix(in srgb, var(--text) 55%, var(--accent))
-    );
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
+    letter-spacing: -0.02em;
+    color: var(--text);
   }
   .role {
-    font-size: clamp(1.4rem, 5vw, 2.4rem);
-    font-weight: 700;
-    color: var(--text-muted);
-    margin: 0.25rem 0 1.25rem;
+    font-family: var(--font-display);
+    font-size: clamp(1.3rem, 4.5vw, 2rem);
+    font-weight: 600;
+    color: var(--accent);
+    margin: 0.5rem 0 1.25rem;
   }
   .tagline {
     max-width: 46ch;
@@ -333,20 +279,20 @@ import Icon from './Icon.astro';
     border-radius: 12px;
     font-size: 0.85rem;
     line-height: 1.55;
-    color: #d6d6e4;
+    color: #e8e2da;
     white-space: pre-wrap;
     overflow-wrap: break-word;
   }
   .chat-body .bubble.user {
     align-self: flex-end;
     background: var(--accent);
-    color: #fff;
+    color: var(--accent-contrast);
     border-bottom-right-radius: 4px;
   }
   .chat-body .bubble.assistant {
     align-self: flex-start;
-    background: #1b1b26;
-    border: 1px solid #262635;
+    background: #262119;
+    border: 1px solid #332d27;
     border-bottom-left-radius: 4px;
   }
   .chat-body .bubble.typing {
@@ -358,7 +304,7 @@ import Icon from './Icon.astro';
     width: 6px;
     height: 6px;
     border-radius: 50%;
-    background: #8888a0;
+    background: #a39c93;
     animation: chat-bounce 1.2s ease-in-out infinite;
   }
   .chat-body .bubble.typing span:nth-child(2) {
@@ -380,18 +326,17 @@ import Icon from './Icon.astro';
     }
   }
   .chat-suggest .suggest-chip {
-    font-family: var(--font-mono);
-    font-size: 0.72rem;
-    color: #a0a0b8;
-    background: #16161f;
-    border: 1px solid #262635;
+    font-size: 0.75rem;
+    color: #b5aca1;
+    background: #221e1a;
+    border: 1px solid #332d27;
     border-radius: 999px;
     padding: 0.3rem 0.7rem;
     cursor: pointer;
     transition: color 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
   }
   .chat-suggest .suggest-chip:hover {
-    color: #fff;
+    color: #f2ede6;
     border-color: var(--accent);
     transform: translateY(-1px);
   }
