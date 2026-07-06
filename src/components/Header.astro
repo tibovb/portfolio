@@ -19,6 +19,9 @@ const nav = [
   <div class="container header-inner">
     <a href="#main" class="brand" aria-label={`${site.name} — home`}>
       <span class="brand-mark">{initials}</span>
+      <span class="brand-name">
+        {site.name}<span class="brand-sub">’s portfolio</span>
+      </span>
     </a>
 
     <nav class="nav" aria-label="Primary">
@@ -71,6 +74,11 @@ const nav = [
     height: 4rem;
     gap: 1rem;
   }
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.7rem;
+  }
   .brand-mark {
     display: inline-grid;
     place-items: center;
@@ -83,6 +91,23 @@ const nav = [
     letter-spacing: -0.02em;
     color: var(--accent-contrast);
     background: var(--accent);
+    flex-shrink: 0;
+  }
+  .brand-name {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--text);
+    white-space: nowrap;
+  }
+  .brand-sub {
+    color: var(--text-muted);
+    font-weight: 500;
+  }
+  @media (max-width: 700px) {
+    .brand-name {
+      display: none;
+    }
   }
   .nav {
     display: flex;
