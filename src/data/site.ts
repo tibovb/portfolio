@@ -35,7 +35,7 @@ export const site = {
   /** Social / professional links. Remove any you don't want to show. */
   socials: [
     { label: 'GitHub', href: 'https://github.com/tibovb', icon: 'github' },
-    { label: 'LinkedIn', href: 'https://www.linkedin.com/in/', icon: 'linkedin' },
+    { label: 'LinkedIn', href: 'https://www.linkedin.com/in/tibo-vanbrabandt-665228277/', icon: 'linkedin' },
     { label: 'Email', href: 'mailto:tibo.vanbrabandt@gmail.com', icon: 'mail' },
   ],
 } as const;
