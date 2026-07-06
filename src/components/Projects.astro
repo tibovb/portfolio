@@ -1,6 +1,17 @@
 ---
 import { projects } from '../data/projects';
 import Icon from './Icon.astro';
+import { Image } from 'astro:assets';
+
+// Project screenshots live in src/assets/projects/ and are matched by filename.
+const shots = import.meta.glob<{ default: ImageMetadata }>(
+  '../assets/projects/*.{png,jpg,jpeg,webp}',
+  { eager: true }
+);
+const shotFor = (name?: string) =>
+  name
+    ? Object.entries(shots).find(([path]) => path.includes(`/${name}.`))?.[1]?.default
+    : undefined;
 ---
 
 <section id="projects" aria-labelledby="projects-title">
@@ -43,10 +54,24 @@ import Icon from './Icon.astro';
             </div>
           </div>
 
-          <div class="panel-visual" aria-hidden="true">
-            <span class="panel-icon">
-              <Icon name={project.icon ?? 'code'} size={56} />
-            </span>
+          <div class="panel-visual">
+            {
+              shotFor(project.image) ? (
+                <div class="panel-shot">
+                  <Image
+                    src={shotFor(project.image)!}
+                    alt={`${project.title} app screenshot`}
+                    width={420}
+                    densities={[1, 2]}
+                    loading="lazy"
+                  />
+                </div>
+              ) : (
+                <span class="panel-icon" aria-hidden="true">
+                  <Icon name={project.icon ?? 'code'} size={56} />
+                </span>
+              )
+            }
           </div>
         </article>
       ))
@@ -131,6 +156,27 @@ import Icon from './Icon.astro';
     position: relative;
     min-height: 12rem;
   }
+  /* Real app screenshot: floats slightly rotated, straightens on hover */
+  .panel-shot {
+    max-height: min(52vh, 27rem);
+    aspect-ratio: 654 / 1448;
+    border-radius: clamp(1.4rem, 2.4vw, 2rem);
+    overflow: hidden;
+    box-shadow:
+      0 30px 60px rgba(0, 0, 0, 0.5),
+      0 0 50px hsl(var(--card-hue) 70% 50% / 0.22);
+    transform: rotate(-3.5deg);
+    transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .panel:hover .panel-shot {
+    transform: rotate(0deg) scale(1.02);
+  }
+  .panel-shot :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
   .panel-icon {
     display: grid;
     place-items: center;
@@ -154,7 +200,14 @@ import Icon from './Icon.astro';
       min-height: 0;
     }
     .panel-visual {
+      min-height: 0;
+    }
+    /* Icon fallback adds nothing on mobile, but a real screenshot stays */
+    .panel-icon {
       display: none;
+    }
+    .panel-shot {
+      max-height: 22rem;
     }
   }
 </style>

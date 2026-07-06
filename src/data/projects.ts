@@ -18,6 +18,8 @@ export type Project = {
   icon?: 'mobile' | 'layout' | 'cloud' | 'code';
   /** Banner hue (0-360) — gives each card its own color identity. */
   hue?: number;
+  /** Screenshot in src/assets/projects/<image>.(png|jpg|webp) — shown instead of the icon. */
+  image?: string;
 };
 
 export const projects: Project[] = [
@@ -30,6 +32,7 @@ export const projects: Project[] = [
     featured: true,
     icon: 'mobile',
     hue: 24,
+    image: 'drivn-health',
   },
   {
     title: 'DRIVN Coach Dashboard',
