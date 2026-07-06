@@ -4,8 +4,7 @@ import icon from 'astro-icon';
 
 // https://astro.build/config
 export default defineConfig({
-  // GitHub Pages: https://tibovb.github.io/portfolio/
-  site: 'https://tibovb.github.io',
-  base: '/portfolio',
+  // Custom domain via GitHub Pages
+  site: 'https://tibovanbrabandt.com',
   integrations: [icon()],
 });
