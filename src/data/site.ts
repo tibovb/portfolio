@@ -27,7 +27,7 @@ export const site = {
     school: 'Howest University of Applied Sciences',
   },
   /** Contact email — used for the Contact section + mailto link. */
-  email: 'tibo.vanbrabandt@gmail.com',
+  email: 'hello@tibovanbrabandt.com',
   /** Where you're based (optional — set to '' to hide). */
   location: 'Belgium',
   /** Birth date (ISO) — age is derived from this at build time. */
@@ -36,7 +36,7 @@ export const site = {
   socials: [
     { label: 'GitHub', href: 'https://github.com/tibovb', icon: 'github' },
     { label: 'LinkedIn', href: 'https://www.linkedin.com/in/tibo-vanbrabandt-665228277/', icon: 'linkedin' },
-    { label: 'Email', href: 'mailto:tibo.vanbrabandt@gmail.com', icon: 'mail' },
+    { label: 'Email', href: 'mailto:hello@tibovanbrabandt.com', icon: 'mail' },
   ],
 } as const;
 
