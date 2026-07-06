@@ -12,6 +12,12 @@ const shotFor = (name?: string) =>
   name
     ? Object.entries(shots).find(([path]) => path.includes(`/${name}.`))?.[1]?.default
     : undefined;
+
+// Attach the resolved screenshot + orientation to each project.
+const items = projects.map((p) => {
+  const shot = shotFor(p.image);
+  return { ...p, shot, wide: shot ? shot.width > shot.height : false };
+});
 ---
 
 <section id="projects" aria-labelledby="projects-title">
@@ -21,10 +27,12 @@ const shotFor = (name?: string) =>
 
   <div class="container stack">
     {
-      projects.map((project, i) => (
-        <article class="panel" style={`--card-hue: ${project.hue ?? 24}; --i: ${i}`}>
+      items.map((project, i) => (
+        <article class:list={['panel', { 'panel--wide': project.wide }]} style={`--card-hue: ${project.hue ?? 24}; --i: ${i}`}>
           <div class="panel-info">
-            {project.featured && <p class="panel-kicker">Flagship product</p>}
+            {(project.kicker || project.featured) && (
+              <p class="panel-kicker">{project.kicker ?? 'Flagship product'}</p>
+            )}
             <h3 class="panel-title">
               {project.demo ? (
                 <a href={project.demo} target="_blank" rel="noopener noreferrer">{project.title}</a>
@@ -56,16 +64,31 @@ const shotFor = (name?: string) =>
 
           <div class="panel-visual">
             {
-              shotFor(project.image) ? (
-                <div class="panel-shot">
-                  <Image
-                    src={shotFor(project.image)!}
-                    alt={`${project.title} app screenshot`}
-                    width={420}
-                    densities={[1, 2]}
-                    loading="lazy"
-                  />
-                </div>
+              project.shot ? (
+                project.wide ? (
+                  <div class="browser">
+                    <div class="browser-bar" aria-hidden="true">
+                      <span /><span /><span />
+                    </div>
+                    <Image
+                      src={project.shot}
+                      alt={`${project.title} screenshot`}
+                      width={1100}
+                      densities={[1, 2]}
+                      loading="lazy"
+                    />
+                  </div>
+                ) : (
+                  <div class="panel-shot">
+                    <Image
+                      src={project.shot}
+                      alt={`${project.title} app screenshot`}
+                      width={440}
+                      densities={[1, 2]}
+                      loading="lazy"
+                    />
+                  </div>
+                )
               ) : (
                 <span class="panel-icon" aria-hidden="true">
                   <Icon name={project.icon ?? 'code'} size={56} />
@@ -156,10 +179,15 @@ const shotFor = (name?: string) =>
     position: relative;
     min-height: 12rem;
   }
-  /* Real app screenshot: floats slightly rotated, straightens on hover */
+
+  /* Wide panels (landscape screenshots): give the visual a bit more room,
+     kept beside the text so it stays fully visible in the pinned band. */
+  .panel--wide {
+    grid-template-columns: 0.95fr 1.15fr;
+  }
+
+  /* Phone screenshot: tall, floats slightly rotated, straightens on hover */
   .panel-shot {
-    max-height: min(52vh, 27rem);
-    aspect-ratio: 654 / 1448;
     border-radius: clamp(1.4rem, 2.4vw, 2rem);
     overflow: hidden;
     box-shadow:
@@ -172,10 +200,45 @@ const shotFor = (name?: string) =>
     transform: rotate(0deg) scale(1.02);
   }
   .panel-shot :global(img) {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
     display: block;
+    width: auto;
+    height: min(52vh, 27rem);
+    max-width: 100%;
+  }
+
+  /* Web screenshot: framed like a browser window */
+  .browser {
+    width: 100%;
+    max-width: 60rem;
+    border-radius: 14px;
+    overflow: hidden;
+    border: 1px solid hsl(var(--card-hue) 40% 45% / 0.35);
+    box-shadow:
+      0 30px 60px rgba(0, 0, 0, 0.5),
+      0 0 60px hsl(var(--card-hue) 70% 50% / 0.18);
+    transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .panel:hover .browser {
+    transform: translateY(-4px);
+  }
+  .browser-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.7rem 0.9rem;
+    background: #14110e;
+    border-bottom: 1px solid hsl(var(--card-hue) 30% 30% / 0.4);
+  }
+  .browser-bar span {
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+    background: hsl(var(--card-hue) 25% 40%);
+  }
+  .browser :global(img) {
+    display: block;
+    width: 100%;
+    height: auto;
   }
   .panel-icon {
     display: grid;

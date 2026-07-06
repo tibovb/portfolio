@@ -14,6 +14,8 @@ export type Project = {
   source?: string;
   /** Set true to highlight it (larger card / accent border). */
   featured?: boolean;
+  /** Small context label above the title (e.g. who it was built for). */
+  kicker?: string;
   /** Icon shown in the card banner. */
   icon?: 'mobile' | 'layout' | 'cloud' | 'code';
   /** Banner hue (0-360) — gives each card its own color identity. */
@@ -26,10 +28,11 @@ export const projects: Project[] = [
   {
     title: 'DRIVN Health',
     description:
-      'A complete mobile application for the powerlifting community with training management, lift tracking, and competition support. Designed, built, and published independently, from initial concept to release on the App Store and Google Play.',
+      'The athlete training app I built for DRIVN, a powerlifting coaching company. Daily check-ins, activity and nutrition tracking, bodyweight trends, and the programming athletes follow from their coach. Designed, built, and published end to end, from concept to the App Store and Google Play.',
     tags: ['React Native', 'Expo', 'TypeScript', 'App Store', 'Google Play'],
     // demo: 'https://apps.apple.com/...',   // ← link your App Store / Play Store listing
     featured: true,
+    kicker: 'Freelance · DRIVN',
     icon: 'mobile',
     hue: 24,
     image: 'drivn-health',
@@ -37,17 +40,20 @@ export const projects: Project[] = [
   {
     title: 'DRIVN Coach Dashboard',
     description:
-      'The web companion to DRIVN Health: a dashboard where coaches manage their athletes, review training data, adjust programming, and track progress in one place.',
+      'The coach-side web app for DRIVN. Coaches manage their athletes, review training and check-in data, adjust programming, and track progress in one place, as the companion to the DRIVN Health athlete app.',
     tags: ['React', 'TypeScript', 'REST APIs'],
     // demo: 'https://...',
+    kicker: 'Freelance · DRIVN',
     icon: 'layout',
     hue: 42,
+    image: 'drivn-dashboard',
   },
   {
-    title: 'Enterprise Integration Work',
+    title: 'Enterprise Integrations',
     description:
-      'Event-driven integration solutions on the Microsoft Azure stack. Logic Apps, Service Bus, and API Management connect business-critical systems reliably and at scale.',
+      'As a Microsoft Integration Consultant at delaware Benelux, I design and deliver event-driven integrations on the Azure stack. Logic Apps, Service Bus, and API Management connect business-critical systems reliably and at scale.',
     tags: ['Azure', 'Logic Apps', 'Service Bus', 'API Management', 'C# / .NET'],
+    kicker: 'delaware Benelux',
     icon: 'cloud',
     hue: 8,
   },
