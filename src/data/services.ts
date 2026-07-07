@@ -6,6 +6,8 @@
 
 export type Service = {
   icon: 'mobile' | 'layout' | 'code' | 'cloud' | 'tools' | 'spark';
+  /** Short mono label above the title. */
+  label: string;
   title: string;
   description: string;
   hue: number;
@@ -14,23 +16,26 @@ export type Service = {
 export const services: Service[] = [
   {
     icon: 'mobile',
-    title: 'Mobile apps, idea to store',
+    label: 'iOS + Android',
+    title: 'Apps that earn their spot on the home screen',
     description:
-      'Cross-platform apps in React Native and Expo, taken from first concept to a polished release on the App Store and Google Play.',
+      'React Native and Expo, from first sketch to a release you’re proud to ship. One codebase, both stores, no half work.',
     hue: 24,
   },
   {
     icon: 'layout',
-    title: 'Web apps & dashboards',
+    label: 'React + TypeScript',
+    title: 'The dashboard your team lives in',
     description:
-      'The tools behind your product: admin panels, coach dashboards, and data-driven web apps built in React and TypeScript.',
+      'Admin panels, coach dashboards, and data-heavy web apps that stay fast and clear as they grow.',
     hue: 42,
   },
   {
     icon: 'code',
-    title: 'Product partner for niche sports',
+    label: 'Idea to launch',
+    title: 'One dev, the whole product',
     description:
-      'A technical partner who builds your platform end to end, from idea to launch, and actually understands the sport, the way I do for DRIVN.',
+      'No dev team yet? I take it from napkin to launch. And since I train myself, I actually get sport and coaching products.',
     hue: 8,
   },
 ];
