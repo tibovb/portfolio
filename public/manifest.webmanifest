@@ -1,0 +1,14 @@
+{
+  "name": "Tibo Vanbrabandt",
+  "short_name": "Tibo V.",
+  "description": "Microsoft Integration Consultant & App Developer",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#110d0a",
+  "theme_color": "#110d0a",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
