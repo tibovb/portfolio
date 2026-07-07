@@ -16,6 +16,8 @@ export type Project = {
   featured?: boolean;
   /** Small context label above the title (e.g. who it was built for). */
   kicker?: string;
+  /** Optional status pill, e.g. 'In development'. */
+  status?: string;
   /** Icon shown in the card banner. */
   icon?: 'mobile' | 'layout' | 'cloud' | 'code';
   /** Banner hue (0-360) — gives each card its own color identity. */
@@ -28,11 +30,12 @@ export const projects: Project[] = [
   {
     title: 'DRIVN Health',
     description:
-      'The athlete training app I built for DRIVN, a powerlifting coaching company. Daily check-ins, activity and nutrition tracking, bodyweight trends, and the programming athletes follow from their coach. Designed, built, and published end to end, from concept to the App Store and Google Play.',
-    tags: ['React Native', 'Expo', 'TypeScript', 'App Store', 'Google Play'],
-    // demo: 'https://apps.apple.com/...',   // ← link your App Store / Play Store listing
+      'The athlete training app I’m building for DRIVN, a powerlifting coaching company. Daily check-ins, activity and nutrition tracking, bodyweight trends, and the programming athletes follow from their coach. Designed and built end to end, currently in development and heading for release on the App Store and Google Play.',
+    tags: ['React Native', 'Expo', 'TypeScript', 'iOS', 'Android'],
+    // demo: 'https://apps.apple.com/...',   // ← add the store link once it's published
     featured: true,
     kicker: 'Freelance · DRIVN',
+    status: 'In development',
     icon: 'mobile',
     hue: 24,
     image: 'drivn-health',
@@ -44,6 +47,7 @@ export const projects: Project[] = [
     tags: ['React', 'TypeScript', 'REST APIs'],
     // demo: 'https://...',
     kicker: 'Freelance · DRIVN',
+    status: 'In development',
     icon: 'layout',
     hue: 42,
     image: 'drivn-dashboard',

@@ -13,7 +13,7 @@ export const site = {
   /** Longer intro used in the About section (supports multiple paragraphs). */
   about: [
     'For the past three years I have worked as a Microsoft Integration Consultant at delaware Benelux, where I design and deliver reliable integrations on the Azure stack that connect the systems businesses depend on every day.',
-    'Alongside my consultancy work, I build custom software for clients in niche sports. For DRIVN, a powerlifting coaching company, I built the full platform end to end: the DRIVN Health app athletes train with and the dashboard their coaches use to manage programming and progress, shipped from concept to the App Store and Google Play. As a powerlifter myself, it is exactly the kind of software I want to exist.',
+    'Alongside my consultancy work, I build custom software for clients in niche sports. For DRIVN, a powerlifting coaching company, I’m building the full platform end to end: the DRIVN Health app athletes train with and the dashboard their coaches use to manage programming and progress, from first concept toward launch on the App Store and Google Play. As a powerlifter myself, it is exactly the kind of software I want to exist.',
     'I hold a Bachelor’s degree in Multimedia & Creative Technologies (MCT) from Howest University of Applied Sciences. My toolkit combines React, React Native, and TypeScript on the product side with the Azure integration stack on the enterprise side.',
     'AI is part of my daily workflow. Tools like Claude Code and GitHub Copilot help me ship faster without losing the engineering rigour that production software demands.',
     'Away from the keyboard you’ll usually find me under a barbell, training and competing in powerlifting.',
