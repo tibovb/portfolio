@@ -16,26 +16,26 @@ export type Service = {
 export const services: Service[] = [
   {
     icon: 'mobile',
-    label: 'iOS + Android',
-    title: 'Apps that earn their spot on the home screen',
+    label: 'One app for it all',
+    title: 'Get your club off spreadsheets',
     description:
-      'React Native and Expo, from first sketch to a release you’re proud to ship. One codebase, both stores, no half work.',
+      'Memberships, schedules, teams, and communication in one app, instead of scattered across Excel, WhatsApp, and paper.',
     hue: 24,
   },
   {
     icon: 'layout',
-    label: 'React + TypeScript',
-    title: 'The dashboard your team lives in',
+    label: 'Design that fits',
+    title: 'A UI members actually enjoy',
     description:
-      'Admin panels, coach dashboards, and data-heavy web apps that stay fast and clear as they grow.',
+      'Clubs usually get the interface wrong. I build something clean and quick that people open because they want to, not because they have to.',
     hue: 42,
   },
   {
     icon: 'code',
-    label: 'Idea to launch',
-    title: 'One dev, the whole product',
+    label: 'Built around you',
+    title: 'Shaped to how your club runs',
     description:
-      'No dev team yet? I take it from napkin to launch. And since I train myself, I actually get sport and coaching products.',
+      'No generic template. An app built around your sport, your members, and the way your club actually works day to day.',
     hue: 8,
   },
 ];

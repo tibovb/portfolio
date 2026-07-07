@@ -9,7 +9,7 @@ export const site = {
   role: 'Microsoft Integration Consultant & App Developer',
   /** One-line tagline for the hero + <meta description>. */
   tagline:
-    'Integration consultant at delaware Benelux and independent software developer. I build end-to-end software for niche sports, like the DRIVN powerlifting platform.',
+    'Integration consultant at delaware Benelux and independent app developer. I help sports clubs and coaching businesses go digital with apps people actually enjoy using.',
   /** Longer intro used in the About section (supports multiple paragraphs). */
   about: [
     'For the past three years I have worked as a Microsoft Integration Consultant at delaware Benelux, where I design and deliver reliable integrations on the Azure stack that connect the systems businesses depend on every day.',
